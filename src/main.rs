@@ -1,14 +1,34 @@
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Copyright 2014 Mark McDermott.
+//
+// Licensed under the the MIT license
+// <LICENSE or http://opensource.org/licenses/MIT>.
+// This file may not be copied, modified, or distributed
+// except according to those terms.
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+
+
 extern crate native;
 extern crate glfw;
 extern crate gl;
 
 use glfw::Context;
 
+// --------------------------------------------------------------------------
+// Native entry point
+// --------------------------------------------------------------------------
 #[start]
 fn start(argc: int, argv: *const *const u8) -> int {
     native::start(argc, argv, main)
 }
 
+
+
+// --------------------------------------------------------------------------
+// The "Real" entry point
+// --------------------------------------------------------------------------
 fn main() {
     println!("Welcome to the the Cosmolark editor!")
     
@@ -73,12 +93,18 @@ fn main() {
             prev_time = curr_time;
         }
 
+        
         gl::Clear(gl::COLOR_BUFFER_BIT);
         window.swap_buffers();
     }
 } // end function main()
 
 
+
+// --------------------------------------------------------------------------
+// Monolithic event handler function. TODO: refactor into proper event 
+// handling mechanism.
+// --------------------------------------------------------------------------
 fn handle_window_event(window: &glfw::Window, event: glfw::WindowEvent) {
     match event {
         glfw::KeyEvent(glfw::KeyEscape, _, glfw::Press, _) => {
