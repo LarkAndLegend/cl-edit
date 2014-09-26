@@ -1,0 +1,8 @@
+[package]
+
+name = "cl-edit"
+version = "0.0.1"
+authors = ["Mark McDermott <mark.elias.mcdermott@gmail.com>"]
+
+[dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs.git"
