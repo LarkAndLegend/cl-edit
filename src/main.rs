@@ -136,6 +136,7 @@ fn main() {
     let fs = compile_shader(FS_SRC, gl::FRAGMENT_SHADER);
     let program = link_program(vs, fs);
     
+    sdl2::video::gl_set_swap_interval(0);
     window.show();
     
     let mut vao = 0;
@@ -165,17 +166,24 @@ fn main() {
     }
 
 
-    unsafe {
-        gl::ClearColor(0.3,0.3,0.3,1.0);
-        gl::Clear(gl::COLOR_BUFFER_BIT);
-        gl::DrawArrays(gl::TRIANGLES, 0,3);
-    }
-    
-    // swap buffer
-    window.gl_swap_window();
-    
 
+    let mut cnt: u64 = 0;
     'event : loop {
+                
+        unsafe {
+            gl::ClearColor(0.3,0.3,0.3,1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl::DrawArrays(gl::TRIANGLES, 0,3);
+        }
+        
+        window.gl_swap_window();
+        
+        cnt = cnt + 1;
+        
+        if cnt % 100 == 0 {
+            println!("Cnt: {}",cnt);
+        }
+        
         match sdl2::event::poll_event() {
             sdl2::event::Quit(_) => break 'event,
             sdl2::event::None    => continue,
