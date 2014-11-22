@@ -15,8 +15,5 @@ name = "cl-edit"
 version = "0.0.1"
 authors = ["Mark McDermott <mark.elias.mcdermott@gmail.com>"]
 
-[dependencies.glfw]
-git = "https://github.com/bjz/glfw-rs.git"
-
-[dependencies.gl]
-git = "https://github.com/bjz/gl-rs"
+[dependencies.sdl2]
+git = "https://github.com/AngryLawyer/rust-sdl2"
