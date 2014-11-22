@@ -10,11 +10,12 @@
 // ---------------------------------------------------------------------------
 
 extern crate sdl2;
+extern crate gl;
 extern crate native;
 
 
-use sdl2::video::{Window, PosCentered, OPENGL};
-use sdl2::event::{Quit, None, poll_event};
+//use sdl2::video::{Window, PosCentered, OPENGL};
+//use sdl2::event::{Quit, None, poll_event};
 
 // --------------------------------------------------------------------------
 // Native entry point
@@ -33,10 +34,14 @@ fn main() {
     println!("Welcome to the the Cosmolark editor!")
     
     sdl2::init(sdl2::INIT_EVERYTHING);
+    
+    gl::load_with(|s| unsafe {
+        std::mem::transmute(sdl2::video::gl_get_proc_address(s))
+    });
 
 
     // open a window
-    let window = match Window::new("Cosmolark Asset Editor",PosCentered, PosCentered, 300,300,OPENGL) {
+    let window = match sdl2::video::Window::new("Cosmolark Asset Editor",sdl2::video::PosCentered, sdl2::video::PosCentered, 300,300,sdl2::video::OPENGL) {
         Ok(window) => window,
         Err(err)   => panic!("failed to create window: {}", err)
     };
@@ -63,10 +68,10 @@ fn main() {
     
 
     'event : loop {
-        match poll_event() {
-            Quit(_) => break 'event,
-            None    => continue,
-            event   => println!("event: {}", event),
+        match sdl2::event::poll_event() {
+            sdl2::event::Quit(_) => break 'event,
+            sdl2::event::None    => continue,
+            event                => println!("event: {}", event),
         }
     }
     
