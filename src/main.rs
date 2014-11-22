@@ -11,6 +11,8 @@
 
 extern crate sdl2;
 extern crate gl;
+extern crate libc;
+extern crate log;
 extern crate native;
 
 
@@ -35,36 +37,38 @@ fn main() {
     
     sdl2::init(sdl2::INIT_EVERYTHING);
     
-    gl::load_with(|s| unsafe {
-        std::mem::transmute(sdl2::video::gl_get_proc_address(s))
-    });
-
+            sdl2::video::gl_set_attribute(sdl2::video::GLContextMajorVersion,3);
+        sdl2::video::gl_set_attribute(sdl2::video::GLContextMinorVersion,0);
+        sdl2::video::gl_set_attribute(sdl2::video::GLDepthSize,24);
+        sdl2::video::gl_set_attribute(sdl2::video::GLDoubleBuffer, 1);
+        sdl2::video::gl_set_attribute(sdl2::video::GLContextProfileMask,sdl2::video::ll::SDL_GL_CONTEXT_PROFILE_CORE as int);
 
     // open a window
     let window = match sdl2::video::Window::new("Cosmolark Asset Editor",sdl2::video::PosCentered, sdl2::video::PosCentered, 300,300,sdl2::video::OPENGL) {
         Ok(window) => window,
         Err(err)   => panic!("failed to create window: {}", err)
     };
+
+    let context = window.gl_create_context().unwrap();
+    sdl2::clear_error();
+    gl::load_with(|name| {
+        match sdl2::video::gl_get_proc_address(name) {
+            Some(glproc) => glproc as *const libc::c_void,
+            None         => { println!("missing GL function: {}", name); std::ptr::null() }
+        }
+    });
+
     window.show();
     
-    // create a rendering context
-    let renderer = match sdl2::render::Renderer::from_window(window, sdl2::render::RenderDriverIndex::Auto, sdl2::render::ACCELERATED) {
-        Ok(renderer) => renderer,
-        Err(err)     => panic!("failed to create renderer: {}", err)
-    };
-    
-    renderer.set_draw_color(sdl2::pixels::RGB(101,208,246)).unwrap(); // light blue
-    renderer.clear().unwrap();
-    
-    renderer.set_draw_color(sdl2::pixels::RGB(0,153,204)).unwrap(); // dark blue
-    let border_rect = sdl2::rect::Rect::new(320-64, 240-64, 128, 128);
-    match renderer.draw_rect(&border_rect) {
-        Ok(_) => {},
-        Err(err) => panic!("failed to draw rect: {}", err)
-    };
+
+
+    unsafe {
+        gl::ClearColor(0.3,0.3,0.3,1.0);
+        gl::Clear(gl::COLOR_BUFFER_BIT);
+    }
     
     // swap buffer
-    renderer.present();
+    window.gl_swap_window();
     
 
     'event : loop {
