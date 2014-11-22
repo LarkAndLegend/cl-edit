@@ -53,18 +53,18 @@ fn main() {
         Err(err)     => panic!("failed to create renderer: {}", err)
     };
     
-    let _ = renderer.set_draw_color(sdl2::pixels::RGB(101,208,246)); // light blue
-    let _ = renderer.clear();
+    renderer.set_draw_color(sdl2::pixels::RGB(101,208,246)).unwrap(); // light blue
+    renderer.clear().unwrap();
     
-    let _ = renderer.set_draw_color(sdl2::pixels::RGB(0,153,204)); // dark blue
+    renderer.set_draw_color(sdl2::pixels::RGB(0,153,204)).unwrap(); // dark blue
     let border_rect = sdl2::rect::Rect::new(320-64, 240-64, 128, 128);
-    let _ = match renderer.draw_rect(&border_rect) {
+    match renderer.draw_rect(&border_rect) {
         Ok(_) => {},
         Err(err) => panic!("failed to draw rect: {}", err)
     };
     
     // swap buffer
-    let _ = renderer.present();
+    renderer.present();
     
 
     'event : loop {
